@@ -38,8 +38,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_language(CXX)
 
-# Enable following line if you want to see mikroplot examples
-# option(MIKROPLOT_BUILD_EXAMPLES "" OFF )
+# Enable following line and regenerate cmake if you want to see mikroplot examples
+# option(MIKROPLOT_BUILD_EXAMPLES "" ON )
 
 add_subdirectory("ext/mikroplot")
 
