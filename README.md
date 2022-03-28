@@ -18,6 +18,8 @@ int main() {
   using namespace mikroplot;
   Window window(800, 800, "Simple Draw demo");
   while(window.shouldClose() == false) {
+    window.setScreen(-5,5,-5,5);
+    window.drawAxis();
     window.drawFunction([&](float x)->float{
       return x*x*x;
     });
