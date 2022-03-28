@@ -1,7 +1,7 @@
 //// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ////
-//// simpledraw
+//// MikRoPlot - C++ Plotting made easy.
 ////
-//// MIT Licanse
+//// MIT License
 ////
 //// Copyright (c) 2022 Mikko Romppainen.
 ////
