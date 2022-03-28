@@ -56,7 +56,7 @@ See file: [main_mikroplot_demo.cpp](https://github.com/Miceroy/mikroplot/blob/ma
 
 # License 
 
-MIT License
+[MIT License](LICENSE)
 
 
 
