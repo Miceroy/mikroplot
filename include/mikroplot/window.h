@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <memory>
+#include <chrono>
 
 struct GLFWwindow;
 
@@ -171,6 +172,25 @@ namespace mikroplot {
     class Texture;
     class Shader;
 
+
+	class Timer {
+	public:
+		Timer()
+			: start(std::chrono::steady_clock::now()) {
+		}
+
+		float getDeltaTime() {
+			auto end = std::chrono::steady_clock::now();
+			float deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(end - start).count();
+			start = end;
+			return deltaTime;
+		}
+
+	private:
+		Timer(const Timer&) = delete;
+		std::chrono::time_point<std::chrono::steady_clock> start;
+	};
+
     class Window {
     public:
         explicit Window(int sizeX, int sizeY, const std::string& title, const std::vector<RGBA>& palette = DEFAULT_PALETTE, int clearColor = 3);
@@ -214,6 +234,7 @@ namespace mikroplot {
         template<typename RenderFunc>
         auto runClips(RenderFunc renderClip, int numScenes, float timeToShowSingleClip, int screenshotTime = -1) {
             // Screenshot functionality
+			Timer frameTimer;
             int screenshots = -1;
             auto checkScreenshots = [&](int time, int clip){
                 if(time == screenshotTime && clip > screenshots){
@@ -229,7 +250,7 @@ namespace mikroplot {
                 // Swap frame
                 update();
                 checkScreenshots(uint32_t(time)%uint32_t(timeToShowSingleClip), clip);
-                time += 1.0f/60.0f;
+                time += frameTimer.getDeltaTime();
             }
         };
     private:

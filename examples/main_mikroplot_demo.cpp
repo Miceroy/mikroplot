@@ -27,8 +27,30 @@
 #include <mikroplot/window.h>
 #include <random>
 
+
 int main() {
     using namespace mikroplot;
+	// Heatmap values: 0.0 ... 2.0
+	HeatMap heatMap = heatMapN(128, 0.0f);
+	for (std::size_t y = 0; y < heatMap.size(); ++y) {
+		for (std::size_t x = 0; x < heatMap[y].size(); ++x) {
+			float h = heatMap.size();
+			float w = heatMap[y].size();
+			float valY = float(y) / h;
+			float valX = float(x) / w;
+			heatMap[y][x] = valX + valY;
+			assert(heatMap[y][x] >= 0.0f);
+			assert(heatMap[y][x] <= 2.0f);
+		}
+	}
+
+	// All Pixels.
+	Grid pixels = gridNM(16, 16, 0);
+	for (std::size_t i = 0; i < DEFAULT_PALETTE.size(); ++i) {
+		std::size_t x = i % 16;
+		std::size_t y = i / 16;
+		pixels[y][x] = i;
+	}
 
     auto renderScene = [&](Window& window, int scene, float time) {
         if(scene==0){
@@ -71,32 +93,12 @@ int main() {
             window.setClearColor();
             window.setScreen(-8,8,-8,8);
             window.drawAxis(5,5,1,1);
-            // All Pixels.
-            Grid pixels = gridNM(16,16,0);
-            for(std::size_t i=0; i<DEFAULT_PALETTE.size(); ++i){
-                std::size_t x = i%16;
-                std::size_t y = i/16;
-                pixels[y][x] = i;
-            }
             window.drawPixels(pixels);
         } else if(scene == 5) {
             window.setTitle("Draw heatmap (-8, 8, -8, 8)");
             window.setClearColor();
             window.setScreen(-8,8,-8,8);
             window.drawAxis(5,5,1,1);
-            // Heatmap values: 0.0 ... 2.0
-            HeatMap heatMap = heatMapN(512,0.0f);
-            for(std::size_t y=0; y<heatMap.size(); ++y){
-                for(std::size_t x=0; x<heatMap[y].size(); ++x){
-                    float h = heatMap.size();
-                    float w = heatMap[y].size();
-                    float valY = float(y)/h;
-                    float valX = float(x)/w;
-                    heatMap[y][x] = valX+valY;
-                    assert(heatMap[y][x] >= 0.0f);
-                    assert(heatMap[y][x] <= 2.0f);
-                }
-            }
             window.drawHeatMap(heatMap, 0.0f, 2.0f);
         } else if(scene == 6) {
             window.setTitle("Shade heatmap (-8, 8, -8, 8)");
