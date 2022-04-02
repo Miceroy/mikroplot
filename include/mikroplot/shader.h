@@ -36,9 +36,12 @@ namespace mikroplot {
         Shader(const std::string& vertexShaderString, const std::string& fragmentShaderString);
         ~Shader();
 
-        void bind();
-        void unbind();
-
+        template<typename F>
+        void use(F f){
+            bind();
+            f();
+            unbind();
+        }
         void setUniformv(const std::string& name, const std::vector<float>& v);
         void setUniform(const std::string& name, float v);
         void setUniform(const std::string& name, float x, float y);
@@ -46,7 +49,11 @@ namespace mikroplot {
         void setUniform(const std::string& name, float x, float y, float z, float w);
         void setUniformm(const std::string& name, const std::vector<float> & m, bool transposed=false);
         void setUniform(const std::string& name, int value);
+
     private:
+
+        void bind();
+        void unbind();
         GLint m_shaderProgram;	// Handle to the shader program
     };
 

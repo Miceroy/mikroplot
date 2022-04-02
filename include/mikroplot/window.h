@@ -33,6 +33,7 @@
 #include <assert.h>
 #include <memory>
 #include <chrono>
+#include <map>
 
 struct GLFWwindow;
 
@@ -191,6 +192,16 @@ namespace mikroplot {
 		std::chrono::time_point<std::chrono::steady_clock> start;
 	};
 
+    namespace mesh {
+        struct Mesh {
+            unsigned int  vao;
+            unsigned int  vbos[2];
+
+            void setVBOData(int index, const std::vector<vec2>& data);
+            void release();
+        };
+    }
+
     class Window {
     public:
         explicit Window(int sizeX, int sizeY, const std::string& title, const std::vector<RGBA>& palette = DEFAULT_PALETTE, int clearColor = 3);
@@ -273,15 +284,14 @@ namespace mikroplot {
         float                           m_bottom;
         float                           m_top;
 
-        std::unique_ptr<FrameBuffer>    m_shadeFbo;
+        std::unique_ptr<FrameBuffer>    m_shadeFbo;        
         std::unique_ptr<Shader>         m_ssqShader;
-        //std::unique_ptr<Shader>         m_spriteShader;
-
-        unsigned int                    m_ssqVao;
-        unsigned int                    m_ssqVbos[2];
-        unsigned int                    m_spriteVao;
-        unsigned int                    m_spriteVbos[2];
+        std::unique_ptr<mesh::Mesh>     m_ssq;
+        std::unique_ptr<mesh::Mesh>     m_sprite;
         std::string                     m_screenshotFileName;
+
+        std::map<int, bool>         m_prevKeys;
+        std::map<int, bool>         m_curKeys;
     };
 
     static RGBA heatToRGB(float value, const float valueMin, float valueMax) {

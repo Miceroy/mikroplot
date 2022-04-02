@@ -54,6 +54,13 @@ namespace mikroplot {
          */
         virtual ~FrameBuffer();
 
+        template<typename F>
+        void use(F f){
+            bind();
+            f();
+            unbind();
+        }
+
         /**
          * Adds new output texture to framebuffer.
          *
@@ -68,16 +75,6 @@ namespace mikroplot {
         void setDepthTexture(std::shared_ptr<Texture> tex);
 
         /**
-         * Binds framebuffer for rendering. All opengl draw commands will happen to this framebuffer.
-         */
-        void bind();
-
-        /**
-         * Unbinds framebuffer for rendering. All opengl draw commands will happen to opengl back buffer.
-         */
-        void unbind();
-
-        /**
          * Returns texture by index, which is added by addTexture.
          *
          * @param	index	Index where to return texture.
@@ -85,13 +82,9 @@ namespace mikroplot {
          */
         std::shared_ptr<Texture> getTexture(int index) const;
 
-        template<typename F>
-        void use(F f){
-            bind();
-            f();
-            unbind();
-        }
     private:
+        void bind();
+        void unbind();
         std::vector< std::shared_ptr<Texture> >		m_textures;
         std::vector<GLenum>			m_drawBuffers;
         GLuint						m_fboId;

@@ -98,17 +98,20 @@ Shader::Shader(const std::string& vertexShaderString, const std::string& fragmen
 }
 
 Shader::~Shader() {
+    assert(m_shaderProgram != 0);
 	// Delete shader program
 	glDeleteProgram(m_shaderProgram);
 	//checkGLError();
 }
 
 void Shader::bind() {
+    assert(m_shaderProgram != 0);
 	glUseProgram(m_shaderProgram);
 	checkGLError();
 }
 
 void Shader::unbind() {
+    assert(m_shaderProgram != 0);
     glUseProgram(0);
     checkGLError();
 }

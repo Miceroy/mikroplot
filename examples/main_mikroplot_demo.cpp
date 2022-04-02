@@ -53,7 +53,7 @@ int main() {
 	}
 
     auto renderScene = [&](Window& window, int scene, float time) {
-        if(scene==0){
+        if(scene==7){
             window.setTitle("Draw coordinate axis (-10, 10)");
             window.setScreen(-10,10,-10,10);
             window.setClearColor(5);
@@ -106,7 +106,7 @@ int main() {
             window.setScreen(-8,8,-8,8);
             window.drawAxis();
             window.shade(shaders::heatmapGradient, shader_funcs::heatmap);
-        }  else if(scene == 7) {
+        }  else if(scene == 0) {
             window.setTitle("Shade sphere r=1.5 to position (2.0,1.0)");
             window.setClearColor();
             window.setScreen(-8,8,-8,8);
@@ -155,19 +155,19 @@ int main() {
             window.drawSprite(transform,pixels,{Constant("t",{time})},"color = vec4(max(color.r,abs(sin(10*t))), color.g, color.b, color.a);");
         }
         if(window.getKeyPressed(KeyCodes::KEY_SPACE)){
-            window.playSound("bell.wav");
+            try {
+                printf("Playing bell.wav... ");
+                window.playSound("bell.wav");
+                printf("... done!\n");
+            }  catch (const std::exception& e) {
+                printf("\nFailed to play bell.wav!\n");
+            }
         }
     };
 
     // Create window and run it.
     Window window(512, 512, "Mikroplot demo");
-    try {
-        printf("Playing bell.wav... ");
-        window.playSound("bell.wav");
-        printf("... done!\n");
-    }  catch (const std::exception& e) {
-        printf("\nFailed to play bell.wav!\n");
-    }
+
     window.runClips(renderScene, 10, 5.0f, 2);
 
     return 0;
