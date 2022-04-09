@@ -27,6 +27,7 @@ int main() {
     window.update();
   }
   return 0;
+}
 
 ```
 
