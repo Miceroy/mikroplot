@@ -31,12 +31,13 @@
 namespace mikroplot {
 
 Shader::Shader(const std::string& vertexShaderString, const std::string& fragmentShaderString)
-    : m_shaderProgram(0) {
+	: m_shaderProgram(0) {
+	checkGLError();
 	// Create and compile vertex shader
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	checkGLError();
-    auto vs = vertexShaderString.c_str();
-    glShaderSource(vertexShader, 1, &vs, 0);
+	auto vs = vertexShaderString.c_str();
+	glShaderSource(vertexShader, 1, &vs, 0);
 	checkGLError();
 	glCompileShader(vertexShader);
 	checkGLError();
@@ -48,16 +49,17 @@ Shader::Shader(const std::string& vertexShaderString, const std::string& fragmen
 	checkGLError();
 	if (!success) {
 		// If failed, get error string using glGetShaderInfoLog-function.
-        glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
+		glGetShaderInfoLog(vertexShader, 512, 0, infoLog);
 		checkGLError();
-        printf("ERROR: Vertex shader compilation failed: \"%s\"\n", infoLog);
+		auto msg = std::string("ERROR: Vertex shader compilation failed: \"") + infoLog + "\"";
+		printf("%s\n",msg.c_str()); throw std::runtime_error(msg);
 	}
 
 	// Create and compile fragment shader
 	int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	checkGLError();
-    auto fs = fragmentShaderString.c_str();
-    glShaderSource(fragmentShader, 1, &fs, 0);
+	auto fs = fragmentShaderString.c_str();
+	glShaderSource(fragmentShader, 1, &fs, 0);
 	checkGLError();
 	glCompileShader(fragmentShader);
 	checkGLError();
@@ -66,9 +68,10 @@ Shader::Shader(const std::string& vertexShaderString, const std::string& fragmen
 	checkGLError();
 	if (!success) {
 		// If failed, get error string using glGetShaderInfoLog-function.
-        glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
+		glGetShaderInfoLog(fragmentShader, 512, 0, infoLog);
 		checkGLError();
-        printf("ERROR: Fragment shader compilation failed: \"%s\"\n", infoLog);
+		auto msg = std::string("ERROR: Fragment shader compilation failed: \"") + infoLog + "\"";
+		printf("%s\n",msg.c_str()); throw std::runtime_error(msg);
 	}
 
 	// link shaders
@@ -85,9 +88,10 @@ Shader::Shader(const std::string& vertexShaderString, const std::string& fragmen
 	checkGLError();
 	if (!success) {
 		// If failed, get error string using glGetProgramInfoLog-function.
-        glGetProgramInfoLog(m_shaderProgram, 512, 0, infoLog);
+		glGetProgramInfoLog(m_shaderProgram, 512, 0, infoLog);
 		checkGLError();
-		printf("ERROR: Shader link failed: \"%s\"\n", infoLog);
+		auto msg = std::string("ERROR: Shader link failed: \"") + infoLog + "\"";
+		printf("%s\n",msg.c_str()); throw std::runtime_error(msg);
 	}
 
 	// After linking, the shaders can be deleted.
@@ -98,63 +102,63 @@ Shader::Shader(const std::string& vertexShaderString, const std::string& fragmen
 }
 
 Shader::~Shader() {
-    assert(m_shaderProgram != 0);
+	assert(m_shaderProgram != 0);
 	// Delete shader program
 	glDeleteProgram(m_shaderProgram);
 	//checkGLError();
 }
 
 void Shader::bind() {
-    assert(m_shaderProgram != 0);
+	assert(m_shaderProgram != 0);
 	glUseProgram(m_shaderProgram);
 	checkGLError();
 }
 
 void Shader::unbind() {
-    assert(m_shaderProgram != 0);
-    glUseProgram(0);
-    checkGLError();
+	assert(m_shaderProgram != 0);
+	glUseProgram(0);
+	checkGLError();
 }
 
 void Shader::setUniformv(const std::string& name, const std::vector<float>& v){
-    GLint loc = glGetUniformLocation(m_shaderProgram, name.c_str());
-    if (loc < 0) {
-        return; // Don't set the uniform value, if it not found
-    }
-    if(v.size()==1){
-        glUniform1f(loc, v[0]);
-    } else if(v.size()==2){
-        glUniform2f(loc, v[0], v[1]);
-    } else if(v.size()==3){
-        glUniform3f(loc, v[0], v[1], v[2]);
-    } else if(v.size()==4){
-        glUniform4f(loc, v[0], v[1], v[2], v[3]);
-    }
-    checkGLError();
+	GLint loc = glGetUniformLocation(m_shaderProgram, name.c_str());
+	if (loc < 0) {
+		return; // Don't set the uniform value, if it not found
+	}
+	if(v.size()==1){
+		glUniform1f(loc, v[0]);
+	} else if(v.size()==2){
+		glUniform2f(loc, v[0], v[1]);
+	} else if(v.size()==3){
+		glUniform3f(loc, v[0], v[1], v[2]);
+	} else if(v.size()==4){
+		glUniform4f(loc, v[0], v[1], v[2], v[3]);
+	}
+	checkGLError();
 }
 void Shader::setUniform(const std::string& name, float v) {
-    setUniformv(name,{v});
+	setUniformv(name,{v});
 }
 
 void Shader::setUniform(const std::string& name, float x, float y) {
-    setUniformv(name,{x,y});
+	setUniformv(name,{x,y});
 }
 
 void Shader::setUniform(const std::string& name, float x, float y, float z) {
-    setUniformv(name,{x,y,z});
+	setUniformv(name,{x,y,z});
 }
 
 void Shader::setUniform(const std::string& name, float x, float y, float z, float w) {
-    setUniformv(name,{x,y,z,w});
+	setUniformv(name,{x,y,z,w});
 }
 
-void Shader::setUniformm(const std::string& name, const std::vector<float>& m, bool transposed) {
-    GLint loc = glGetUniformLocation(m_shaderProgram, name.c_str());
-    if (loc < 0) {
-        return; // Don't set the uniform value, if it not found
-    }
-    glUniformMatrix4fv(loc, 1, transposed?GL_TRUE:GL_FALSE, &m[0]);
-    checkGLError();
+void Shader::setUniformm(const std::string& name, const float* m, bool transposed) {
+	GLint loc = glGetUniformLocation(m_shaderProgram, name.c_str());
+	if (loc < 0) {
+		return; // Don't set the uniform value, if it not found
+	}
+	glUniformMatrix4fv(loc, 1, transposed ? GL_TRUE:GL_FALSE, m);
+	checkGLError();
 }
 
 

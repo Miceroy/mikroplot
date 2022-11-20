@@ -25,20 +25,27 @@
 //// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ////
 #pragma once
-#include <glad/gl.h>		// Include glad
+//#include <glad/gl.h>		// Include glad
+#include <stdint.h>
 
 namespace mikroplot {
 
-    class Texture {
-    public:
-        Texture(int width, int height, int nrChannels, const GLubyte* data);
-        Texture(int width, int height, bool isDepthTexture);
-        ~Texture();
+	class Texture {
+	public:
+		Texture() : m_textureId(-1), m_width(0), m_height(0) {}
+		Texture(int width, int height, int nrChannels, const uint8_t* data);
+		Texture(int width, int height, int nrChannels, const float* data);
+		Texture(int width, int height, bool isDepthTexture);
+		~Texture();
 
-        GLuint getTextureId() const;
+		uint32_t getTextureId() const;
+		auto getWidth() const {return m_width;}
+		auto getHeight() const {return m_height;}
 
-    private:
-        GLuint				m_textureId;	// Texture id
-    };
+	private:
+		uint32_t				m_textureId;	// Texture id
+		int m_width;
+		int m_height;
+	};
 
 }

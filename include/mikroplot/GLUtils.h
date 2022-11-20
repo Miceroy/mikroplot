@@ -31,6 +31,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <stdexcept>
 
 namespace mikroplot {
 
@@ -49,13 +50,14 @@ static void checkGLError() {
 			}
 		};
 		printf("OpenGL Error (%d): \"%s\"\n", (int)err, getErrorString(err));
+		throw std::runtime_error("OpenGL Error ("+std::to_string(err) + "): " + getErrorString(err));
 		assert(0);
 	}
 }
 
 static std::string readFile(const std::string& fileName){
-    std::ifstream f(fileName);
-    return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
+	std::ifstream f(fileName);
+	return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
 }
 
 }
